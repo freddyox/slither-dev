@@ -8,10 +8,12 @@ class Snake : public sf::Drawable, public sf::Transformable {
 private:
   float fDisplayx, fDisplayy;
   float fRadius;
+  float fOffset;
   std::vector<sf::CircleShape> fSnake;
   sf::CircleShape fSnakeParts;
   sf::CircleShape fSnakeHead;
-  float fVx, fVy, fAx, fAy; // velocity and acceleration components
+  float fVel; // velocity components
+  float fAccel;
 
 public:
   Snake(float,float); //displayx,y
@@ -20,10 +22,12 @@ public:
 
   // Snake Properties:
   void InitializeSnake();
-  void MoveSnake();
+  void ArrowMovement();
+  void MoveSnake(int);
 
   // Color Scheme = Rainbow:
   std::vector<sf::Color> fColors;
+  std::vector<sf::CircleShape>::iterator vit;
 };
 
 #endif

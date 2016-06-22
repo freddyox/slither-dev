@@ -33,9 +33,15 @@ int main() {
 	window.close();
       }
     }
+    //Drawing:
     window.clear(sf::Color::Black);
     window.draw(walls);
     window.draw(snake);
+
+    //Updating:
+    snake.ArrowMovement();
+    
+
     window.display();      
   }
   return 0;
