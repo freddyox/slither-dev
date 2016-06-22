@@ -1,0 +1,26 @@
+#include "../include/Snake.hh"
+
+#include <iostream>
+
+Snake::Snake(float x, float y){
+  fDisplayx = x;
+  fDisplayy = y;
+  fRadius = 10.0;
+
+  InitializeSnake();
+}
+
+void Snake::InitializeSnake() {
+  sf::CircleShape snake;
+  snake.setRadius( fRadius );
+  snake.setFillColor( sf::Color::Red );
+  sf::FloatRect origin = snake.getLocalBounds();
+  snake.setOrigin( 0.5*origin.width, 0.5*origin.height );
+}
+
+void Snake::draw(sf::RenderTarget& target, sf::RenderStates) const {
+  std::vector<sf::CircleShape>::const_iterator cit;
+  for(cit=fSnake.begin(); cit!=fSnake.end(); cit++){
+    target.draw( *cit );
+  }
+}

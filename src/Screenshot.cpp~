@@ -1,0 +1,55 @@
+#include "../include/Screenshot.hh"
+
+Screenshot::Screenshot(float displayX, float displayY) {
+  displayx = displayX;
+  displayy = displayY;
+
+  shade = sf::VertexArray(sf::Quads, 4);
+ 
+  MakeButton();
+}
+
+void Screenshot::draw( sf::RenderTarget& target, sf::RenderStates) const {
+  target.draw(button);
+  std::vector<sf::VertexArray>::const_iterator cit1;
+  for( cit1=shade_vec.begin(); cit1!=shade_vec.end(); cit1++ ){
+    target.draw(*cit1);
+  }
+}
+
+void Screenshot::MakeButton() {
+  float x = 150.0;
+  float y = 25.0;
+  button.setSize(sf::Vector2f(x,y));
+  button.setOrigin( 0.5*x, 0.5*y );
+  button.setFillColor(sf::Color(200,200,200));
+  button.setPosition( displayx/8.0, displayy/10.0 );
+  ShadeButton( button.getPosition(), sf::Vector2f(x,y), sf::Color(80,80,80), 4.0 );
+}
+
+void Screenshot::MakeWindow() {
+  sf::RenderWindow window(sf::VideoMode(displayx,displayy),"Print Screen Option", sf::Style::Default);
+} 
+
+void Screenshot::ShadeButton(sf::Vector2f pos,sf::Vector2f size,sf::Color col,float thickness){
+  // TOP
+  shade[0].position = sf::Vector2f( pos.x - size.x/2.0, pos.y - size.y/2.0 );
+  shade[1].position = sf::Vector2f( pos.x - size.x/2.0 + thickness, pos.y - size.y/2.0 - thickness);
+  shade[2].position = sf::Vector2f(  pos.x + size.x/2.0 + thickness, pos.y - size.y/2. - thickness );
+  shade[3].position = sf::Vector2f( pos.x + size.x/2.0, pos.y - size.y/2.0 );
+  shade[0].color =  col;
+  shade[1].color =  col;
+  shade[2].color =  col;
+  shade[3].color =  col;
+  shade_vec.push_back( shade );
+  // RIGHT
+  shade[0].position = sf::Vector2f(  pos.x + size.x/2.0, pos.y - size.y/2.0 );
+  shade[1].position = sf::Vector2f( pos.x + size.x/2.0 + thickness, pos.y - size.y/2.0 - thickness );
+  shade[2].position = sf::Vector2f( pos.x + size.x/2.0 + thickness, pos.y + size.y/2.0 - thickness);
+  shade[3].position = sf::Vector2f( pos.x + size.x/2.0, pos.y + size.y/2.0 );
+  shade[0].color =  col;
+  shade[1].color =  col;
+  shade[2].color =  col;
+  shade[3].color =  col;
+  shade_vec.push_back( shade );
+}  
