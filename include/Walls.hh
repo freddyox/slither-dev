@@ -16,6 +16,9 @@ private:
   sf::VertexArray lines;
   std::vector<sf::VertexArray> grid;
 
+  sf::Texture texture;
+  sf::Sprite bg;
+
 public:
   Walls(float,float); 
   ~Walls() {};

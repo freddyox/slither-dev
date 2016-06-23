@@ -24,9 +24,18 @@ Walls::Walls(float x, float y) {
   WallVec.push_back( Wall );
 
   lines = sf::VertexArray(sf::LinesStrip,2);
+
+  // Load up a background:
+  if(!texture.loadFromFile("pics/bg.jpeg")) {
+    std::cerr << "Error loading background texture!" << std::endl;
+  }
+  bg.setTexture(texture);
+  bg.setPosition(0,0);
 }
 
 void Walls::draw(sf::RenderTarget& target, sf::RenderStates) const {
+  target.draw(bg);
+
   std::vector<sf::RectangleShape>::const_iterator cit;
   for( cit = WallVec.begin(); cit != WallVec.end(); cit++ )
     target.draw(*cit);

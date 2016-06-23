@@ -57,25 +57,44 @@ void Snake::InitializeSnake() {
 }
 
 void Snake::MoveSnake(){
-  for(int i=0; i<fSnake.size(); i++){
-    if(i==0){
-      fSnake[i].move( fVel*fHeadDirection );
-    } else{
-      // Position of next circle:
-      sf::Vector2f diff = fSnake[i-1].getPosition() - fSnake[i].getPosition();
-      float mag = sqrt(pow(diff.x,2) + pow(diff.y,2));
-      sf::Vector2f hat = diff/mag*fVel;
-      if(mag>=fRadius*fOffset) {
-	fSnake[i].move(hat);   
-      } 
+
+  // Checking for wall collisions before I move the snake:
+  bool did_snake_hit_wall = false;
+
+  sf::Vector2f head = fSnake[0].getPosition();
+  if( head.x - fHeadRadius < 1.1*fWallThick ) {
+    did_snake_hit_wall = true;
+  }
+  if( head.x + fHeadRadius > fDisplayx-1.1*fWallThick ) {
+    did_snake_hit_wall = true;
+  }
+  if( head.y - fHeadRadius < 1.1*fWallThick ) {
+    did_snake_hit_wall = true;
+  }
+  if( head.y + fHeadRadius > fDisplayy-1.1*fWallThick ){
+    did_snake_hit_wall = true;
+  }
+
+  if( !did_snake_hit_wall ) {
+    for(int i=0; i<fSnake.size(); i++){
+      if(i==0){
+	fSnake[i].move( fVel*fHeadDirection );
+      } else{
+	// Position of next circle:
+	sf::Vector2f diff = fSnake[i-1].getPosition() - fSnake[i].getPosition();
+	float mag = sqrt(pow(diff.x,2) + pow(diff.y,2));
+	sf::Vector2f hat = diff/mag*fVel;
+	if(mag>=fRadius*fOffset) {
+	  fSnake[i].move(hat);   
+	} 
+      }
     }
+  } else {
+    // Handle death:
   }
 }
 
 void Snake::ArrowMovement(){
-  // There needs to be a check to see if the Snake is moving 
-  // out of the screen, if so then kill:
-
   if( sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ){
     MoveSnakeKeyboard(0);
   }
@@ -179,7 +198,7 @@ void Snake::SnakeEatsFood(){
   sf::Vector2f foodpos = fFoodVec[0].getPosition();
   sf::Vector2f d = headpos - foodpos;
   float mag = sqrt( pow(d.x,2) + pow(d.y,2) );
-  if( mag<=fHeadRadius ) {
+  if( mag<=fOffset*fHeadRadius ) {
 
     fFoodVec.erase( fFoodVec.begin() );
     
