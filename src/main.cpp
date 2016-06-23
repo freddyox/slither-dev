@@ -11,8 +11,8 @@
 #include "../include/Walls.hh"
 #include "../include/Snake.hh"
 
-const float gDisplayx = 1000;
-const float gDisplayy = 1000;
+const float gDisplayx = 500;
+const float gDisplayy = 500;
 
 int main() {
 
@@ -39,8 +39,9 @@ int main() {
     window.draw(snake);
 
     //Updating:
+    snake.MoveSnake();
     snake.ArrowMovement();
-    
+    snake.SnakeEatsFood();
 
     window.display();      
   }
