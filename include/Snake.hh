@@ -7,22 +7,36 @@
 class Snake : public sf::Drawable, public sf::Transformable {
 private:
   float fDisplayx, fDisplayy;
+  int fWallThick;
+  float fGameTime;
+  bool fFirstTry;
+
+  // Snake Properties:
   float fRadius;
   float fHeadRadius;
   float fOffset;
-  int fWallThick;
-  int fSnakeLength;
+  bool fDead;
+  float fDeathTime;
 
-  std::vector<sf::CircleShape> fSnake;
   sf::CircleShape fSnakeParts;
   sf::CircleShape fSnakeHead;
-  float fVel; 
+  std::vector<sf::CircleShape> fSnake;
+
+  float fVel, fVelOld; 
   float fAccel;
   sf::Vector2f fHeadDirection;
 
+  // Food:
+  int fNFood;
   float fFoodRad;
   sf::CircleShape fFood;
+  float fFoodDeg;
   std::vector<sf::CircleShape> fFoodVec;
+
+  // Score:
+  sf::Font fFont;
+  sf::Text fTitle;
+  char fBuff[50];
 
 public:
   Snake(float,float); //displayx,y
@@ -32,19 +46,37 @@ public:
   // Snake Properties:
   void InitializeSnake();
   void ArrowMovement();
-  void MoveSnakeKeyboard(int);
+  void MoveSnakeKeyboard(int); //direction
   void MoveSnake();
  
   void MakeFood();
   void SnakeEatsFood();
+  void MakeFoodMove();
 
-  // +/- x and +/- y directions. Argument is int (0-3) corresponding
-  // to these directions:
-  sf::Vector2f GetDirection(int);
+  void MakeSnakeFaster();
+  void MakeSnakeFasterTime();
+  void MakeSnakeDead(float);
+
+  void DidSnakeHitWall();
+  void DidSnakeHitItself();
+
+  sf::Vector2f GetSnakeDirection(int); //direction
+
+  // Some Get Methods:
+  bool IsSnakeDead(){ return fDead; }
+  void GetGameTime(float t){ fGameTime = t;}
   
-  // Color Scheme = Rainbow:
+  // Updating:
+  void UpdateScore();
+
+  // Cleanup:
+  void ClearFood();
+  void ClearGame();
+
+  // Misc:
   std::vector<sf::Color> fColors;
   std::vector<sf::CircleShape>::iterator vit;
+  void HighScore();
 };
 
 #endif
