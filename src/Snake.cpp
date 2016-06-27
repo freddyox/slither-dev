@@ -13,17 +13,16 @@ Snake::Snake(float x, float y){
   // Grab global window information:
   fDisplayx = x;
   fDisplayy = y;
-  fFirstTry = true;           // every 60s, make game faster
   fWallThick = 10;            // boarder thickness
   fRadius = 10.0;             // radius of snake part
   fHeadRadius =  1.2*fRadius; // radius of snake head
 
-  fOffset = 1.1;              // place snakeparts radius*offset
+  fOffset = 1.25;              // place snakeparts radius*offset
   fVel = 2.0;                 // snake v
   fVelOld = fVel;             // previous snake vel
-  fAccel = 4.0*fVel;          // snake spacebar speed
+  fAccel = 3.0*fVel;          // snake spacebar speed
   fDead = false;              // Snake dead or not?
-  fDeathTime = 0.00004;       // Time it takes to dissolve dead snake
+  fDeathTime = 0.000035;       // Time it takes to dissolve dead snake
 
   // Color Vector:
   fColors.push_back( sf::Color::Red );
@@ -47,11 +46,11 @@ Snake::Snake(float x, float y){
   srand(time(NULL));
   int temp = rand()%3;
   if(temp==3){ temp = 1;};
-  fHeadDirection = GetSnakeDirection(temp); // don't let it go left
-  fFoodDeg = 0.0;
-  fNFood = 0;
-  MakeFood();
-  InitializeSnake();
+  fHeadDirection = GetSnakeDirection(temp); // don't let it go left, or it dies by self collision
+  fFoodDeg = 0.0;                           // rotate food
+  fNFood = 0;                               // number of food eaten
+  MakeFood();                               // make some food
+  InitializeSnake();                        // initialize the snake
 
   // Initialize the Score:
   if( !fFont.loadFromFile("fonts/arial.ttf")) {
@@ -65,6 +64,9 @@ Snake::Snake(float x, float y){
   sf::FloatRect recttemp = fTitle.getLocalBounds();
   fTitle.setPosition( fDisplayx-recttemp.width - 1.4*fWallThick, 
 		      fDisplayy-recttemp.height - 2.1*fWallThick);
+
+  // Initialize EndScreen Boolean:
+  fReadyForEndState = false;
 }
 
 void Snake::InitializeSnake() {
@@ -224,7 +226,7 @@ void Snake::SnakeEatsFood(){
     }
     // Updates:
     fNFood++;
-    if( fNFood>0 && fNFood%5==0) MakeSnakeFaster();
+    if( fNFood>0 && fNFood%6==0) MakeSnakeFaster();
     UpdateScore();
     MakeFood();
     ClearFood();
@@ -285,13 +287,13 @@ void Snake::ClearGame(){
   fFoodVec.clear();
   fVel = 2.0;
   fVelOld = fVel;
-  fAccel = 4.0*fVel;
+  fAccel = 3.0*fVel;
 }
 
 void Snake::MakeSnakeFaster(){
-  fVel += 0.5;
+  fVel += 0.3;
   fVelOld = fVel;
-  fAccel = 2.0*fVel;
+  fAccel = 3.0*fVel;
 }
 
 void Snake::MakeSnakeDead(float elapsed){
@@ -312,12 +314,17 @@ void Snake::MakeSnakeDead(float elapsed){
   }
   // Restart the Snake:
   if( ratio <= 0.05 ) {
+    // Set the End Screen Flag:
     fDead = false;
+    fReadyForEndState = true;
+ 
     HighScore();
     ClearGame();
+
     srand(time(NULL));
-    fHeadDirection = GetSnakeDirection(rand()%4);
+    fHeadDirection = GetSnakeDirection(rand()%3);
     InitializeSnake();
+
     MakeFood();
     UpdateScore();
   }

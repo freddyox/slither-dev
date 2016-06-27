@@ -18,13 +18,36 @@ HighScores::HighScores(float x, float y){
   fColors.push_back( sf::Color(75, 0, 130) );
   fColors.push_back( sf::Color(148,0,211) );
 
-  float fsize = 35.0;
+  fsize = 35.0;
   fText.setFont(fFont);
   fText.setCharacterSize(fsize);
+  fText1.setFont(fFont);
+  fText1.setCharacterSize(25.0);
+  fText1.setColor( sf::Color(0,170,170) );
+  fText1.setString("Push SPACE to go back.");
+  sf::FloatRect textRect1 = fText1.getLocalBounds();
+  fText1.setPosition(sf::Vector2f((fWidth-textRect1.width )/2.0, fHeight-2.0*textRect1.height));
 
-  // Open up high scores:
-  // This should be done in a function, so HS gets updated at the end
-  // of each game...
+  UpdateScores();
+}
+
+void HighScores::draw(sf::RenderTarget &target, sf::RenderStates) const {
+  std::vector<sf::Text>::const_iterator cit;
+  for(cit=fScores.begin(); cit!=fScores.end(); cit++){
+    target.draw(*cit);
+  }
+  target.draw(fText1);
+}
+
+void HighScores::GoBack(){
+  if( sf::Keyboard::isKeyPressed( sf::Keyboard::Space ) ) {
+    fScoreState = false;
+  }
+}
+
+void HighScores::UpdateScores(){
+  fScoreState = true;
+ 
   std::ifstream highscore;
   std::string line;
   highscore.open("scores.dat");
@@ -43,20 +66,7 @@ HighScores::HighScores(float x, float y){
   for(int i=0; i<fScores.size(); i++){
     sf::FloatRect textRect = fScores[i].getLocalBounds();
     float x = (fWidth-textRect.width )/2.0;
-    float y = textRect.height + i*fsize;
+    float y = 1.5*textRect.height + i*fsize;
     fScores[i].setPosition(sf::Vector2f(x,y));
-  }
-}
-
-void HighScores::draw(sf::RenderTarget &target, sf::RenderStates) const {
-  std::vector<sf::Text>::const_iterator cit;
-  for(cit=fScores.begin(); cit!=fScores.end(); cit++){
-    target.draw(*cit);
-  }
-}
-
-void HighScores::GoBack(){
-  if( sf::Keyboard::isKeyPressed( sf::Keyboard::Space ) ) {
-    fScoreState = false;
   }
 }

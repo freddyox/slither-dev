@@ -12,7 +12,8 @@ class HighScores : public sf::Drawable {
 private:
   float fWidth, fHeight;
   sf::Font fFont;
-  sf::Text fText;
+  sf::Text fText,fText1;
+  float fsize;
   std::vector<sf::Text> fScores;
   std::vector<sf::Color> fColors;
   bool fScoreState;
@@ -22,6 +23,8 @@ public:
   ~HighScores(){};
   void draw(sf::RenderTarget&, sf::RenderStates) const;
   bool getScoreState() { return fScoreState; }
+  void setScoreState(bool state){ fScoreState = state;}
   void GoBack();
+  void UpdateScores();
 };
 #endif

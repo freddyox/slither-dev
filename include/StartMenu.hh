@@ -35,10 +35,14 @@ public:
   void HandleMenu(float);
 
   int getPressedItem() { return fIndex; }
+
   bool getMenuState() { return fMenuState; }
   bool getMenuPlay() { return fPlay; }
   bool getMenuScores() { return fScores; }
   bool getMenuExit() { return fCloseMenu; }
+
   void setMenuState(bool state){ fMenuState = state;} 
+  void setMenuScores(bool state){ fScores = state; }
+  void setMenuPlay(bool state){ fPlay = state; }
 };
 #endif

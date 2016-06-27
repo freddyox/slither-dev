@@ -4,7 +4,7 @@ echo "Compiling..."
 echo " "
 cd src/
 
-g++ -c main.cpp Walls.cpp Snake.cpp StartMenu.cpp HighScores.cpp -I/Documents/SFML/SFML_SRC/include 
+g++ -c main.cpp Walls.cpp Snake.cpp StartMenu.cpp HighScores.cpp EndScreen.cpp -I/Documents/SFML/SFML_SRC/include 
 
 
 echo "Linking..."
@@ -18,7 +18,7 @@ fi
 mv *.o ../linkers
 cd ../linkers
 
-g++ main.o Walls.o Snake.o StartMenu.o HighScores.o -o slither -L/Documents/SFML/SFML_SRC/lib -lsfml-graphics -lsfml-window -lsfml-system
+g++ main.o Walls.o Snake.o StartMenu.o HighScores.o EndScreen.o -o slither -L/Documents/SFML/SFML_SRC/lib -lsfml-graphics -lsfml-window -lsfml-system
 
 mv slither ../
 cd ../

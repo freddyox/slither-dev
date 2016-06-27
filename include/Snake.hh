@@ -9,7 +9,6 @@ private:
   float fDisplayx, fDisplayy;
   int fWallThick;
   float fGameTime;
-  bool fFirstTry;
 
   // Snake Properties:
   float fRadius;
@@ -37,6 +36,8 @@ private:
   sf::Font fFont;
   sf::Text fTitle;
   char fBuff[50];
+
+  bool fReadyForEndState;
 
 public:
   Snake(float,float); //displayx,y
@@ -77,6 +78,9 @@ public:
   std::vector<sf::Color> fColors;
   std::vector<sf::CircleShape>::iterator vit;
   void HighScore();
+
+  bool getEndState(){ return fReadyForEndState;}
+  void setEndState(bool state){ fReadyForEndState = state; }
 };
 
 #endif

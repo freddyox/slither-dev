@@ -12,6 +12,7 @@
 #include "../include/Snake.hh"
 #include "../include/StartMenu.hh"
 #include "../include/HighScores.hh"
+#include "../include/EndScreen.hh"
 
 const float gDisplayx = 500;
 const float gDisplayy = 500;
@@ -30,6 +31,8 @@ int main() {
  
   Walls walls( window.getSize().x, window.getSize().y );
   Snake snake( window.getSize().x, window.getSize().y );
+
+  EndScreen endscreen( window.getSize().x, window.getSize().y );
 
   float elapsed = 0.0;
   float game_elapsed = 0.0;
@@ -50,6 +53,7 @@ int main() {
       window.draw(walls);
       window.draw(startmenu); 
     }
+    // Handle High Scores:
     scores.GoBack();
     if( startmenu.getMenuScores() && scores.getScoreState() ) {
       window.clear();
@@ -58,10 +62,11 @@ int main() {
     }
     if( !scores.getScoreState() ){
       startmenu.setMenuState(true);
+      startmenu.setMenuScores(false);
+      scores.setScoreState(true);
     }
-
     if( startmenu.getMenuExit() ) { window.close(); }
- 
+    // Handle Game:
     if( startmenu.getMenuPlay() ) {
       sf::Clock GameClock;
 
@@ -85,7 +90,39 @@ int main() {
 	elapsed+=Clock.restart().asSeconds();
 	snake.MakeSnakeDead(elapsed);
       } else { elapsed = 0.0; }
+
+      // Get End Screen Bool:
+      if( snake.getEndState() ) {
+	endscreen.setEndState(true);
+	startmenu.setMenuState(false);
+	startmenu.setMenuPlay(false);
+      }
     }
+   
+    // Handle End screen:
+    if( endscreen.getEndState() ) {
+      window.clear();
+      endscreen.HandleEndScreen();
+      window.draw(walls);
+      window.draw(endscreen);
+    }
+    if( endscreen.getReadyToQuit() ){ window.close(); }
+
+    if( endscreen.getReadyToPlay() ){
+      // Set all Booleans back to Initial Values:   
+      endscreen.setEndState(false);
+      endscreen.setReadyToPlay(false);
+      endscreen.setReadyToQuit(false);
+
+      startmenu.setMenuState(true);
+      startmenu.setMenuPlay(false);
+      startmenu.setMenuScores(false);
+
+      snake.setEndState(false);
+
+      scores.setScoreState(true);
+    }
+    
     window.display();      
   }
   return 0;
