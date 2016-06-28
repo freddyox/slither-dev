@@ -38,6 +38,8 @@ private:
   char fBuff[50];
 
   bool fReadyForEndState;
+  sf::Text fPlayer;
+  int fFinal;
 
 public:
   Snake(float,float); //displayx,y
@@ -81,6 +83,9 @@ public:
 
   bool getEndState(){ return fReadyForEndState;}
   void setEndState(bool state){ fReadyForEndState = state; }
+
+  void drawPlayerName(std::string);
+  unsigned int getFinalScore(){ return fFinal; }
 };
 
 #endif

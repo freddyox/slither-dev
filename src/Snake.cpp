@@ -8,6 +8,7 @@
 #include <fstream>
 #include <set>
 #include <sstream>
+#include <map>
 
 Snake::Snake(float x, float y){
   // Grab global window information:
@@ -65,6 +66,10 @@ Snake::Snake(float x, float y){
   fTitle.setPosition( fDisplayx-recttemp.width - 1.4*fWallThick, 
 		      fDisplayy-recttemp.height - 2.1*fWallThick);
 
+  fPlayer.setFont(fFont);
+  fPlayer.setCharacterSize(20);
+  fPlayer.setColor(sf::Color::White);
+
   // Initialize EndScreen Boolean:
   fReadyForEndState = false;
 }
@@ -87,15 +92,6 @@ void Snake::MoveSnake(){
   DidSnakeHitWall();
 
   DidSnakeHitItself();
-
-  // Every Minute that passes by, make game faster:
-  // if(int(fGameTime) % 60 == 0 && int(fGameTime)>0 && fFirstTry) {
-  //   MakeSnakeFaster();
-  //   fFirstTry = false;
-  // } 
-  // if(int(fGameTime) % 61 == 0 && int(fGameTime)>0 && fFirstTry) {
-  //   fFirstTry = true;
-  // }
 
   if( !fDead ) {
     for(int i=0; i<fSnake.size(); i++){
@@ -145,7 +141,7 @@ void Snake::ArrowMovement(){
 
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates) const {
   target.draw(fTitle);
-
+  target.draw(fPlayer);
   std::vector<sf::CircleShape>::const_iterator cit1;
   for(cit1=fFoodVec.begin(); cit1!=fFoodVec.end(); cit1++){
     target.draw( *cit1 );
@@ -256,7 +252,7 @@ void Snake::DidSnakeHitItself(){
     sf::Vector2f parts = vit->getPosition();
     sf::Vector2f d = parts - head;
     float mag = sqrt( pow(d.x,2)+pow(d.y,2) );
-    if( fabs(mag) < 0.4*fRadius ){ fDead = true; }
+    if( fabs(mag) < 0.7*fRadius ){ fDead = true; }
   }
 }
 
@@ -331,35 +327,56 @@ void Snake::MakeSnakeDead(float elapsed){
 }
 
 void Snake::HighScore(){
+  fFinal = fSnake.size();
+
   std::ifstream highscore;
   std::string line;
   highscore.open("scores.dat");
 
-  std::vector<int> list_of_scores;
+  std::multimap<int,std::string> list;
+
+  // Is our new score even in the running:
+  bool is_it_new = false;
+  int count = 1;
 
   if( highscore.is_open()){
     while( std::getline(highscore, line) ){
       int score;
+      std::string name;
       std::stringstream first(line);
-      first >> score;
-      list_of_scores.push_back(score);
+      first >> score >> name;
+
+      list.insert(std::pair<int,std::string>(score,name));
+
+      if( fFinal >= score || count<=10 ) { 
+	is_it_new = true; 
+      }
+      count++;
     }
   } else std::cerr << "Error opening high scores!" << std::endl;
   highscore.close();
-  
-  // Insert the new score:
-  list_of_scores.push_back( fSnake.size() );
-  std::sort(list_of_scores.begin(),list_of_scores.end());
 
-  std::ofstream newscores;
-  newscores.open("scores.dat");
-  // Update the highscore:
-  std::vector<int>::reverse_iterator rit;
-  int count = 1;
-  for(rit=list_of_scores.rbegin(); rit!=list_of_scores.rend(); rit++){
-    if( count<=10 ){
-      newscores << *rit << std::endl;
+  // Insert the new score:
+  if(is_it_new){
+    list.insert(std::pair<int,std::string>(fSnake.size(),fPlayer.getString()));
+
+    std::ofstream newscores;
+    newscores.open("scores.dat");
+    // Update the highscore:
+    std::multimap<int,std::string>::reverse_iterator rit;
+    count = 1;
+    for(rit=list.rbegin(); rit!=list.rend(); rit++){
+      if( count<=10 ){
+	newscores << rit->first << "   " << rit->second << std::endl;
+      }
+      count++;
     }
-    count++;
   }
+}
+
+void Snake::drawPlayerName(std::string player){
+  fPlayer.setString(player);
+  sf::FloatRect recttemp = fPlayer.getLocalBounds();
+  fPlayer.setPosition( 1.4*fWallThick, 
+		       fDisplayy-recttemp.height - 2.1*fWallThick);
 }

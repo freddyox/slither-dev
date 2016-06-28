@@ -1,5 +1,6 @@
 #include "../include/HighScores.hh"
 #include <fstream>
+#include <sstream>
 
 HighScores::HighScores(float x, float y){
   fWidth = x;
@@ -36,6 +37,9 @@ void HighScores::draw(sf::RenderTarget &target, sf::RenderStates) const {
   for(cit=fScores.begin(); cit!=fScores.end(); cit++){
     target.draw(*cit);
   }
+  for(cit=fNames.begin(); cit!=fNames.end(); cit++){
+    target.draw(*cit);
+  }
   target.draw(fText1);
 }
 
@@ -52,21 +56,34 @@ void HighScores::UpdateScores(){
   std::string line;
   highscore.open("scores.dat");
   int count = 0;
+  
+  std::string score,name;
+
   if( highscore.is_open()){
     while( std::getline(highscore, line) ){
-      fText.setString(line);
+      std::stringstream first(line);
+      first >> score >> name;
+      fText.setString( score );
       fText.setColor(fColors[count%fColors.size()]);
       fScores.push_back(fText);
+
+      fText.setString( name );
+      fNames.push_back( fText );
+      
       count++;
     }
   }else std::cerr << "Error opening high scores!" << std::endl;
+  
   highscore.close();
  
   // Need to position the scores:
   for(int i=0; i<fScores.size(); i++){
     sf::FloatRect textRect = fScores[i].getLocalBounds();
-    float x = (fWidth-textRect.width )/2.0;
+    float x = fWidth/2.0 - 130.0;
     float y = 1.5*textRect.height + i*fsize;
     fScores[i].setPosition(sf::Vector2f(x,y));
+
+    x = fWidth/2.0 - 30.0;
+    fNames[i].setPosition(sf::Vector2f(x,y));
   }
 }

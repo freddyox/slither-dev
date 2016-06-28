@@ -79,21 +79,23 @@ void StartMenu::HandleMenu(float time){
       MoveDown();
       fTime = 0.0;
     }
-  }
-  if( sf::Keyboard::isKeyPressed( sf::Keyboard::Return ) ) {
-    switch( fIndex ) {
-    case 0:
-      fMenuState = false;
-      fPlay = true;
-      break;
-    case 1:
-      fMenuState = false;
-      fScores = true;
-      break;
-    case 2:
-      fMenuState = false;
-      fCloseMenu = true;
-      break;
+  
+    if( sf::Keyboard::isKeyPressed( sf::Keyboard::Return ) ) {
+      switch( fIndex ) {
+      case 0:
+	fMenuState = false;
+	fPlay = true;
+	break;
+      case 1:
+	fMenuState = false;
+	fScores = true;
+	break;
+      case 2:
+	fMenuState = false;
+	fCloseMenu = true;
+	break;
+	fTime = 0.0;
+      }
     }
   }
 }

@@ -14,7 +14,7 @@ private:
   sf::Font fFont;
   sf::Text fText,fText1;
   float fsize;
-  std::vector<sf::Text> fScores;
+  std::vector<sf::Text> fScores, fNames;
   std::vector<sf::Color> fColors;
   bool fScoreState;
 

@@ -14,14 +14,21 @@ private:
   sf::Font fFont;
   sf::Text fText,fText1;
   std::vector<sf::Text> fOptions;
-  std::string fOpt1, fOpt2;
+  std::string fOpt1, fOpt2, fOpt3;
   int fEntries;
   sf::Color fColor;
+
+  float fTime;
+  float fCutOff;
 
   // Status Flags:
   bool fEndState;
   bool fReadyToPlay;
   bool fReadyToQuit;
+  bool fReadyToRestart;
+
+  char fBuff[200];
+  sf::Text fScore;
 
 public:
   EndScreen(float,float);
@@ -30,7 +37,10 @@ public:
   void MoveUp();
   void MoveDown();
   int getPressedItem() { return fIndex; }
-  void HandleEndScreen();
+  void HandleEndScreen(float);
+
+  void DrawGameOver(std::string, unsigned int);
+
   bool getEndState(){ return fEndState; }
   void setEndState(bool state) { fEndState = state; }
 
@@ -39,5 +49,8 @@ public:
 
   bool getReadyToQuit(){ return fReadyToQuit; }
   void setReadyToQuit(bool state) { fReadyToQuit = state; }
+
+  bool getReadyToRestart(){ return fReadyToRestart; }
+  void setReadyToRestart(bool state){ fReadyToRestart = state; }
 };
 #endif
